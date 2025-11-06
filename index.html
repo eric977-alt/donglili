@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>立冬快乐</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 600px;
+            background: white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 2.2rem;
+        }
+
+        .description {
+            color: #555;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .tip-button {
+            display: inline-block;
+            padding: 15px 40px;
+            background: linear-gradient(to right, #4CAF50, #45a049);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+            border: none;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .tip-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .tip-button:active {
+            transform: translateY(1px);
+        }
+
+        .instructions {
+            margin-top: 25px;
+            color: #666;
+            font-size: 14px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .tip-modal {
+            position: fixed;
+            width: 300px;
+            height: 150px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            animation: fadeIn 0.4s ease, float 3s ease-in-out infinite;
+            transition: transform 0.3s ease;
+        }
+
+        .tip-modal:hover {
+            transform: scale(1.05);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 20px;
+            font-weight: bold;
+            color: #555;
+            background: rgba(255,255,255,0.7);
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.3s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255,255,255,0.9);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.8) rotate(-5deg); }
+            to { opacity: 1; transform: scale(1) rotate(0); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .counter {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>立冬快乐</h1>
+        <p class="description">快点下方按钮</p>
+        <button class="tip-button" id="tipLink">点击查看温馨小提示</button>
+        <p class="counter">已弹出 <span id="counter">0</span> 个温馨提醒</p>
+        <div class="instructions">
+            <p><strong>使用说明：</strong></p>
+            <p>1. 点击按钮随机弹出温馨弹窗</p>
+            <p>2. 弹窗会在3秒后自动消失</p>
+            <p>3. 也可以点击弹窗手动关闭</p>
+        </div>
+        <div class="footer">
+            <p>给生活搞点花头哈哈</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipLink = document.getElementById('tipLink');
+            const counterElement = document.getElementById('counter');
+            let counter = 0;
+
+            // 使用您提供的提示语数组（修复了引号问题）
+            const tips = [
+                '马昱坤立冬快乐',
+                '天天开心嗯',
+                '注意保暖',
+                '按时吃饭',
+                '想不出了',
+                '期待下次见面',
+                '保持微笑哈哈',
+                '睡个好觉',
+                '保持好心情',
+                '线代考试顺利'
+            ];
+
+            // 背景颜色数组
+            const bgColors = [
+                'linear-gradient(135deg, #ffafbd, #ffc3a0)',
+                'linear-gradient(135deg, #a1c4fd, #c2e9fb)',
+                'linear-gradient(135deg, #d4fc79, #96e6a1)',
+                'linear-gradient(135deg, #fbc2eb, #a6c1ee)',
+                'linear-gradient(135deg, #fad0c4, #ffd1ff)',
+                'linear-gradient(135deg, #ffecd2, #fcb69f)',
+                'linear-gradient(135deg, #84fab0, #8fd3f4)',
+                'linear-gradient(135deg, #a3bded, #6991c7)',
+                'linear-gradient(135deg, #f6d365, #fda085)',
+                'linear-gradient(135deg, #e0c3fc, #8ec5fc)',
+                'linear-gradient(135deg, #cd9cf2, #f6f3ff)',
+                'linear-gradient(135deg, #f093fb, #f5576c)',
+                'linear-gradient(135deg, #4facfe, #00f2fe)'
+            ];
+
+            tipLink.addEventListener('click', function() {
+                // 创建弹窗
+                createTipModal();
+            });
+
+            function createTipModal() {
+                // 随机选择提示语和背景色
+                const randomTip = tips[Math.floor(Math.random() * tips.length)];
+                const randomBgColor = bgColors[Math.floor(Math.random() * bgColors.length)];
+
+                // 计算随机位置
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+                const modalWidth = 300;
+                const modalHeight = 150;
+
+                const randomX = Math.floor(Math.random() * (windowWidth - modalWidth));
+                const randomY = Math.floor(Math.random() * (windowHeight - modalHeight));
+
+                // 创建弹窗元素
+                const modal = document.createElement('div');
+                modal.className = 'tip-modal';
+                modal.textContent = randomTip;
+                modal.style.background = randomBgColor;
+                modal.style.left = `${randomX}px`;
+                modal.style.top = `${randomY}px`;
+
+                // 添加关闭按钮
+                const closeBtn = document.createElement('span');
+                closeBtn.className = 'close-btn';
+                closeBtn.textContent = '×';
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    document.body.removeChild(modal);
+                });
+
+                modal.appendChild(closeBtn);
+
+                // 点击弹窗任意位置关闭
+                modal.addEventListener('click', function() {
+                    document.body.removeChild(modal);
+                });
+
+                // 添加到页面
+                document.body.appendChild(modal);
+
+                // 更新计数器
+                counter++;
+                counterElement.textContent = counter;
+
+                // 3秒后自动关闭
+                setTimeout(function() {
+                    if (document.body.contains(modal)) {
+                        document.body.removeChild(modal);
+                    }
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>
